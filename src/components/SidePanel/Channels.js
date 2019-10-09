@@ -1,32 +1,31 @@
 import React from "react";
-import { Menu, Icon, Modal, Form, Input, Button } from "semantic-ui-react";
 import firebase from "../../firebase";
 import { connect } from "react-redux";
 import { setCurrentChannel } from "../../actions";
+import { Menu, Icon, Modal, Form, Input, Button } from "semantic-ui-react";
 
 class Channels extends React.Component {
   state = {
+    activeChannel: "",
     user: this.props.currentUser,
     channels: [],
     channelName: "",
     channelDetails: "",
     channelsRef: firebase.database().ref("channels"),
     modal: false,
-    firstLoad: true,
-    activeChannel: ""
+    firstLoad: true
   };
 
   componentDidMount() {
     this.addListeners();
   }
 
-  componentWillMount() {
+  componentWillUnmount() {
     this.removeListeners();
   }
 
   addListeners = () => {
     let loadedChannels = [];
-
     this.state.channelsRef.on("child_added", snap => {
       loadedChannels.push(snap.val());
       this.setState({ channels: loadedChannels }, () => this.setFirstChannel());
@@ -60,11 +59,13 @@ class Channels extends React.Component {
         avatar: user.photoURL
       }
     };
+
     channelsRef
       .child(key)
       .update(newChannel)
       .then(() => {
         this.setState({ channelName: "", channelDetails: "" });
+        this.closeModal();
         console.log("channel added");
       })
       .catch(err => {
@@ -72,8 +73,8 @@ class Channels extends React.Component {
       });
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
+  handleSubmit = event => {
+    event.preventDefault();
     if (this.isFormValid(this.state)) {
       this.addChannel();
     }
@@ -91,6 +92,7 @@ class Channels extends React.Component {
   setActiveChannel = channel => {
     this.setState({ activeChannel: channel.id });
   };
+
   displayChannels = channels =>
     channels.length > 0 &&
     channels.map(channel => (
@@ -124,7 +126,6 @@ class Channels extends React.Component {
             </span>{" "}
             ({channels.length}) <Icon name="add" onClick={this.openModal} />
           </Menu.Item>
-          {/* Channels */}
           {this.displayChannels(channels)}
         </Menu.Menu>
 
