@@ -47,7 +47,7 @@ class UserPanel extends Component {
           <Grid.Row style={{ padding: "1.2em", margin: 0 }}>
             {/* main application header */}
             <Header inverted floated="left" as="h2">
-              <Header.Content>
+              <Header.Content style={{ marginBottom: "10px" }}>
                 <Icon name="code" />
                 ChattyDevs
               </Header.Content>
@@ -58,7 +58,7 @@ class UserPanel extends Component {
               <Dropdown
                 trigger={
                   <span>
-                    <Image src={user.photoURL} spaced="right" avatar />
+                    <Image src={user.photoURL} spaced="right" avatar circular />
                     {user.displayName}
                   </span>
                 }
